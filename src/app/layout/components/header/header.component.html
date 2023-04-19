@@ -1,0 +1,29 @@
+<header>
+  <mat-toolbar class="justify-content-center" color="primary">
+    <mat-toolbar-row>
+      <h3 class="mb-0">Random Facts About Cats</h3>
+      <span class="example-spacer"></span>
+      <button
+        mat-mini-fab
+        color="accent"
+        class="d-flex align-items-center"
+        aria-label="Account icon"
+        showList="accountList"
+      >
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-nav-list color="primary" id="accountList">
+        <mat-list-item (click)="onLogoutClick($event)">
+          <a class="text-white text-decoration-none">
+            <p class="mb-0">Logout</p>
+          </a>
+          <mat-icon
+            matListItemIcon
+            class="d-flex align-items-center justify-content-center fw-bolder text-white mx-2 my-auto fs-6"
+            >logout</mat-icon
+          >
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</header>

@@ -1,0 +1,20 @@
+@import "@angular/material/theming";
+@import "../../../colors.scss";
+
+.login-section {
+  background-color: mat-color($cat-app-primary, 600);
+  min-height: 100vh;
+
+  & .login-form {
+    width: 400px;
+    height: 320px;
+
+    mat-label {
+      font-size: 14px;
+    }
+
+    mat-error {
+      font-size: 12px;
+    }
+  }
+}

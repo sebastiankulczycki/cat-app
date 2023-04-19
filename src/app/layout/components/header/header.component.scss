@@ -1,0 +1,22 @@
+@import "@angular/material/theming";
+@import "../../../../colors.scss";
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar-row {
+  height: 50px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+mat-nav-list {
+  background-color: mat-color($cat-app-accent);
+  border-radius: 8px 0 8px 8px;
+  padding: 4px;
+
+  & .mdc-list-item {
+    max-height: 30px;
+  }
+}

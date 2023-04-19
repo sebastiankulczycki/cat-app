@@ -1,0 +1,24 @@
+@import "@angular/material/theming";
+@import "../../../../colors.scss";
+
+mat-card {
+  background-color: mat-color($cat-app-primary, 300);
+  border-color: mat-color($cat-app-accent, 400);
+  width: 100%;
+  flex: 1 0 1;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  mat-card {
+    width: calc(50% - 10px);
+    flex: 1 0 calc(50% - 20px);
+  }
+}
+
+@media (min-width: 992px) {
+  mat-card {
+    width: calc(33.33% - 15px);
+    flex: 1 0 calc(33% - 20px);
+  }
+}

@@ -1,0 +1,19 @@
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+$cat-app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $cat-app-primary,
+      accent: $cat-app-accent,
+      warn: $cat-app-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($cat-app-theme);
+
+.dense-3 {
+  @include mat.all-component-densities(-3);
+}

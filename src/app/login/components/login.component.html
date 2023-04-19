@@ -1,0 +1,49 @@
+<main>
+  <section
+    class="login-section h-100 d-flex align-items-center justify-content-center"
+  >
+    <form class="login-form" [formGroup]="form" (submit)="onSubmit()">
+      <mat-card class="p-3" appearance="raised">
+        <mat-card-header class="fs-5 mb-3 d-flex justify-content-center">
+          <div class="fw-bolder" color="accent">Login</div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="dense-3">
+            <mat-form-field class="w-100 mb-1" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" />
+              <mat-error *ngIf="email.hasError('required')">
+                You must provide a <strong>email</strong>
+              </mat-error>
+              <mat-error *ngIf="email.hasError('email')">
+                It's not correct <strong>email</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="dense-3">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Password</mat-label>
+              <input matInput formControlName="password" type="password" />
+              <mat-error *ngIf="password.hasError('required')">
+                You must provide a <strong>password</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+        <mat-card-footer>
+          <mat-card-actions align="end">
+            <button
+              mat-raised-button
+              color="accent"
+              class="fw-bolder"
+              type="submit"
+            >
+              Submit
+            </button>
+          </mat-card-actions>
+        </mat-card-footer>
+      </mat-card>
+    </form>
+  </section>
+</main>
+<app-spinner></app-spinner>

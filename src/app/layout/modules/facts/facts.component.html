@@ -1,0 +1,12 @@
+<section>
+  <div class="container-lg py-5">
+    <ngx-masonry [options]="masonryOptions">
+      <mat-card ngxMasonryItem *ngFor="let fact of facts$ | async" class="p-2">
+        <mat-card-content class="fw-normal fst-italic">
+          {{ fact.sentence }}
+        </mat-card-content>
+      </mat-card>
+    </ngx-masonry>
+  </div>
+  <app-scroll-observer (positionReached)="getFacts()"></app-scroll-observer>
+</section>
