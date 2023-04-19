@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, filter, tap } from 'rxjs';
 import { IFact } from 'src/app/shared/interfaces/facts.interface';
 import { FactsService } from 'src/app/shared/services/facts/facts.service';
 import { NgxMasonryOptions } from 'ngx-masonry';
@@ -11,6 +11,7 @@ import { NgxMasonryOptions } from 'ngx-masonry';
 })
 export class FactsComponent implements OnInit {
   facts$: Observable<IFact[]> = this.factsService.facts$;
+  allFactsLoaded: boolean = false;
 
   masonryOptions: NgxMasonryOptions = {
     columnWidth: 'mat-card',
@@ -21,6 +22,15 @@ export class FactsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFacts();
+
+    this.facts$
+      .pipe(
+        filter((facts) => facts.length > 0),
+        tap(() => {
+          this.allFactsLoaded = true;
+        })
+      )
+      .subscribe();
   }
 
   getFacts(): void {

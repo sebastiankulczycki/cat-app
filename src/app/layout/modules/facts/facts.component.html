@@ -8,5 +8,8 @@
       </mat-card>
     </ngx-masonry>
   </div>
-  <app-scroll-observer (positionReached)="getFacts()"></app-scroll-observer>
+  <app-scroll-observer
+    *ngIf="allFactsLoaded"
+    (positionReached)="getFacts()"
+  ></app-scroll-observer>
 </section>

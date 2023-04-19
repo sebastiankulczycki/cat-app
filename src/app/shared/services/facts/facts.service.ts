@@ -2,8 +2,10 @@ import { Injectable, InjectionToken } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
+  Subject,
   catchError,
   delay,
+  distinct,
   finalize,
   map,
   tap,
@@ -26,12 +28,6 @@ export class FactsService {
     return this._facts$.asObservable();
   }
 
-  private _fact$ = new BehaviorSubject<IFact>({ sentence: '' });
-
-  get fact$(): Observable<IFact | null> {
-    return this._fact$.asObservable();
-  }
-
   constructor(
     private httpService: HttpFactsService,
     private loaderService: LoaderService,
@@ -46,9 +42,6 @@ export class FactsService {
           this.loaderService.showLoader();
         }),
         delay(2000),
-        map((facts) => {
-          return this.removeDuplicates([...this._facts$.value, ...facts]);
-        }),
         catchError((error: HttpErrorResponse) => {
           if (error.status === 404) {
             const err = new Error('No facts found');
@@ -63,39 +56,11 @@ export class FactsService {
         })
       )
       .subscribe((facts) => {
-        this._facts$.next(facts);
+        const newFacts = facts.filter(
+          (fact) =>
+            !this._facts$.value.some((f) => f.sentence === fact.sentence)
+        );
+        this._facts$.next([...this._facts$.value, ...newFacts]);
       });
-  }
-
-  getFact(): void {
-    this.loaderService.showLoader();
-    this.httpService
-      .getFact()
-      .pipe(
-        map((fact) => {
-          console.log(fact);
-          return fact;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 404) {
-            const err = new Error('No fact found');
-            this.dialogService.openErrorDialog(err.message);
-            throw err;
-          }
-          throw error;
-        }),
-        finalize(() => {
-          this.loaderService.hideLoader();
-        })
-      )
-      .subscribe((fact) => {
-        console.log('subscribe fact', fact);
-        this._fact$.next(fact);
-      });
-  }
-
-  private removeDuplicates(facts: IFact[]): IFact[] {
-    const uniqueFacts = Array.from(new Set(facts));
-    return uniqueFacts;
   }
 }

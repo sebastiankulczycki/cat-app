@@ -2,6 +2,7 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
+  AfterViewInit,
   OnDestroy,
   Output,
 } from '@angular/core';
@@ -9,7 +10,7 @@ import {
 @Directive({
   selector: '[scrollObserver]',
 })
-export class ScrollObserverDirective implements OnDestroy {
+export class ScrollObserverDirective implements AfterViewInit, OnDestroy {
   @Output() positionReached = new EventEmitter<boolean>();
 
   private observer: IntersectionObserver;
@@ -25,40 +26,15 @@ export class ScrollObserverDirective implements OnDestroy {
       },
       { threshold: 1 }
     );
+  }
 
-    this.observer.observe(this.el.nativeElement);
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.observer.observe(this.el.nativeElement);
+    }, 0);
   }
 
   ngOnDestroy() {
     this.observer.disconnect();
   }
 }
-
-//   ngAfterViewInit(): void {
-//     this.ngZone.runOutsideAngular(() => {
-//       setTimeout(() => {
-//         window.addEventListener('scroll', () => this.onScroll());
-//       }, 0);
-//     });
-//   }
-
-//   ngOnDestroy(): void {
-//     this.ngZone.runOutsideAngular(() => {
-//       window.removeEventListener('scroll', () => this.onScroll());
-//     });
-//   }
-
-//   onScroll(): void {
-//     console.log(window.scrollY + window.innerHeight);
-//     console.log(this.el.nativeElement.offsetHeight);
-//     if (
-//       window.scrollY + window.innerHeight ===
-//       this.el.nativeElement.offsetHeight
-//     ) {
-//       console.log('run');
-
-//       this.ngZone.run(() => {
-//         console.log('run');
-//         this.factsService.getFacts(24);
-//       });
-//     }
