@@ -30,7 +30,6 @@ export class HttpFactsService {
 
     return this.http.get<ApiResponse<string[]>>(API_URL, { params }).pipe(
       map((response) => {
-        console.log(response);
         return response.data.map((fact) => {
           return {
             sentence: fact,
