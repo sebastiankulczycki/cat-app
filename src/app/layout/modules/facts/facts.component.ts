@@ -36,9 +36,4 @@ export class FactsComponent implements OnInit {
   getFacts(): void {
     this.factsService.getFacts(24);
   }
-
-  getTextHeight(text: string): string {
-    const height = Math.ceil(text.length / 25) * 20; // 50 - liczba znaków na wiersz, 20px - wysokość pojedynczego wiersza
-    return `${height}px`;
-  }
 }
