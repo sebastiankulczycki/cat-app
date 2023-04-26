@@ -1,18 +1,18 @@
 # Random Facts About Cats
 
-# HOW TO RUN
+# How to run?
 After cloning the repository, we launch the project traditionally via ng serve.
 
-# WHY CREATED?
+# Why created?
 App was created for checking my technical skills and to allow you to read some interesting facts about cats :)
 
-# FUNCTIONALITY
+# Functionality
 Main functionality was created in "/shared" folder with services, directive and couple components. 
 There is mocked up login page which is simulating http request through JSON file located in "/assets/user.json".
 Facts view is created with fact duplication removal.
 Project uses Angular Material and NGX Masonry.
 
-# PRODUCTION
+# Production
 https://catsfacts-app.herokuapp.com
 
 Email: test@test.com
