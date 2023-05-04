@@ -2,12 +2,10 @@ import { Injectable, InjectionToken } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
   catchError,
   delay,
-  distinct,
   finalize,
-  map,
+  of,
   tap,
 } from 'rxjs';
 import { HttpFactsService } from './facts.http.service';
@@ -38,15 +36,20 @@ export class FactsService {
     this.httpService
       .getFacts(count)
       .pipe(
-        tap(() => {
+        tap((facts) => {
           this.loaderService.showLoader();
+          const removedDuplicates = [...this._facts$.value, ...facts].filter(
+            (fact, index, self) =>
+              index === self.findIndex((f) => f.sentence === fact.sentence)
+          );
+          this._facts$.next(removedDuplicates);
         }),
         delay(2000),
         catchError((error: HttpErrorResponse) => {
           if (error.status === 404) {
             const err = new Error('No facts found');
             this.dialogService.openErrorDialog(err.message);
-            throw err;
+            return of([]);
           }
           throw error;
         }),
@@ -55,12 +58,6 @@ export class FactsService {
           this.loaderService.hideLoader();
         })
       )
-      .subscribe((facts) => {
-        const newFacts = facts.filter(
-          (fact) =>
-            !this._facts$.value.some((f) => f.sentence === fact.sentence)
-        );
-        this._facts$.next([...this._facts$.value, ...newFacts]);
-      });
+      .subscribe();
   }
 }
