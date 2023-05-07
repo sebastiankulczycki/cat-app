@@ -19,7 +19,7 @@ export class AuthService {
   private _user$ = new BehaviorSubject<IUser | null>(null);
 
   get user$(): Observable<IUser | null> {
-    return this._user$;
+    return this._user$.asObservable();
   }
 
   constructor(
