@@ -8,10 +8,9 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 import { ApiResponse } from '../../interfaces/api-response.interface';
+import { IFact } from '../../interfaces/facts.interface';
 
 export const API_URL = 'https://meowfacts.herokuapp.com/';
-
-import { IFact } from '../../interfaces/facts.interface';
 
 @Injectable({
   providedIn: 'root',

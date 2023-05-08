@@ -1,4 +1,6 @@
 import { Injectable, InjectionToken } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+
 import {
   BehaviorSubject,
   Observable,
@@ -8,11 +10,11 @@ import {
   of,
   tap,
 } from 'rxjs';
+
+import { IFact } from '../../interfaces/facts.interface';
 import { HttpFactsService } from './facts.http.service';
 import { LoaderService } from '../loader.service';
-import { IFact } from '../../interfaces/facts.interface';
 import { ErrorDialogService } from '../error-dialog.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 export const FACTS_SERVICE = new InjectionToken<string>('FACTS_SERVICE_TOKEN');
 
