@@ -5,19 +5,34 @@ import {
   AfterViewInit,
   OnDestroy,
   Output,
+  inject,
 } from '@angular/core';
 
 @Directive({
   selector: '[scrollObserver]',
 })
 export class ScrollObserverDirective implements AfterViewInit, OnDestroy {
-  @Output() positionReached = new EventEmitter<boolean>();
+  @Output() public readonly positionReached: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
 
-  private observer: IntersectionObserver;
+  private _observer!: IntersectionObserver;
+  private readonly el: ElementRef = inject(ElementRef);
 
-  constructor(private el: ElementRef) {
-    this.observer = new IntersectionObserver(
-      (entries) => {
+  public constructor() {
+    this._observer = this._setObserver();
+  }
+
+  public ngAfterViewInit(): void {
+    this._observeElement();
+  }
+
+  public ngOnDestroy() {
+    this._observer.disconnect();
+  }
+
+  private _setObserver(): IntersectionObserver {
+    return new IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             this.positionReached.emit(true);
@@ -28,13 +43,9 @@ export class ScrollObserverDirective implements AfterViewInit, OnDestroy {
     );
   }
 
-  ngAfterViewInit(): void {
+  private _observeElement(): void {
     setTimeout(() => {
-      this.observer.observe(this.el.nativeElement);
+      this._observer.observe(this.el.nativeElement);
     }, 0);
-  }
-
-  ngOnDestroy() {
-    this.observer.disconnect();
   }
 }

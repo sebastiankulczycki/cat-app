@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Observable, map } from 'rxjs';
 
@@ -11,9 +11,9 @@ import { ApiResponse } from '../../interfaces/api-response.interface';
   providedIn: 'root',
 })
 export class HttpAuthService {
-  constructor(private http: HttpClient) {}
+  private readonly http: HttpClient = inject(HttpClient);
 
-  getUser(value: IUserLogin): Observable<IUser> {
+  public getUser(value: IUserLogin): Observable<IUser> {
     return this.http.get<ApiResponse<IUsers>>('assets/user.json').pipe(
       map((response) => {
         const user = <IUser>response.data.users.find((user) => {

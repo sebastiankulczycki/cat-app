@@ -9,10 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 
 import { ErrorDialogModule } from '../shared/components/error-dialog/error-dialog.module';
-import {
-  AUTH_SERVICE,
-  AuthService,
-} from '../shared/services/auth/auth.service';
+import { AuthService } from '../shared/services/auth/auth.service';
 import { HttpAuthService } from '../shared/services/auth/auth.http.service';
 
 import { LoginRoutingModule } from './login.routing.module';
@@ -33,9 +30,6 @@ import { SpinnerModule } from '../shared/components/spinner/spinner.module';
     ErrorDialogModule,
     SpinnerModule,
   ],
-  providers: [
-    { provide: AUTH_SERVICE, useValue: AuthService },
-    HttpAuthService,
-  ],
+  providers: [AuthService, HttpAuthService],
 })
 export class LoginModule {}

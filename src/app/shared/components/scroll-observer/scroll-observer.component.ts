@@ -6,9 +6,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./scroll-observer.component.scss'],
 })
 export class ScrollObserverComponent {
-  @Output('positionReached') positionReached = new EventEmitter<boolean>();
+  @Output('positionReached') public positionReached: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
 
-  onPositionReached(): void {
+  protected onPositionReached(): void {
     this.positionReached.emit(true);
   }
 }

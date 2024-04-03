@@ -1,35 +1,48 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject, Observable, delay, map, tap } from 'rxjs';
 
-import { LoaderService } from '../loader.service';
-import { ErrorDialogService } from '../error-dialog.service';
-import { HttpAuthService } from './auth.http.service';
 import { IUser, IUserLogin } from '../../interfaces/user.interface';
-
-export const AUTH_SERVICE = new InjectionToken<string>('AUTH_SERVICE_TOKEN');
+import { ErrorDialogService } from '../error-dialog.service';
+import { LoaderService } from '../loader.service';
+import { HttpAuthService } from './auth.http.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  isLoggedIn: boolean = false;
+  private _isLoggedIn: boolean = false;
 
-  private _user$ = new BehaviorSubject<IUser | null>(null);
+  private readonly router: Router = inject(Router);
+  private readonly loaderService: LoaderService = inject(LoaderService);
+  private readonly httpService: HttpAuthService = inject(HttpAuthService);
+  private readonly dialogService: ErrorDialogService =
+    inject(ErrorDialogService);
 
-  get user$(): Observable<IUser | null> {
-    return this._user$.asObservable();
+  private readonly _user = new BehaviorSubject<IUser | null>(null);
+  private readonly _user$ = this._user.asObservable();
+
+  public loginUser(userData: IUserLogin): void {
+    this.findUser(userData).subscribe();
   }
 
-  constructor(
-    private httpService: HttpAuthService,
-    private loaderService: LoaderService,
-    private dialogService: ErrorDialogService,
-    private router: Router
-  ) {}
+  public logoutUser(): void {
+    this._isLoggedIn = false;
+    sessionStorage.removeItem('user');
+    this.router.navigate(['login']);
+  }
 
-  findUser(userData: IUserLogin): Observable<IUser> {
+  public isUserLoggedIn(): boolean {
+    if (this._isLoggedIn || sessionStorage.getItem('user')) {
+      return true;
+    } else {
+      this.router.navigate(['login']);
+      return false;
+    }
+  }
+
+  public findUser(userData: IUserLogin): Observable<IUser> {
     return this.httpService.getUser(userData).pipe(
       tap(() => {
         this.loaderService.showLoader();
@@ -38,8 +51,8 @@ export class AuthService {
       map((user) => {
         if (user) {
           const { username, email } = user;
-          this.isLoggedIn = true;
-          this.setUser(user);
+          this._isLoggedIn = true;
+          this._setUser(user);
           this.loaderService.hideLoader();
 
           return { username, email };
@@ -53,27 +66,12 @@ export class AuthService {
     );
   }
 
-  private setUser(value: IUser): void {
+  private _setUser(value: IUser): void {
     sessionStorage.setItem('user', 'true');
-    this._user$.next(value);
+    this._user.next(value);
   }
 
-  loginUser(userData: IUserLogin): void {
-    this.findUser(userData).subscribe();
-  }
-
-  logoutUser(): void {
-    this.isLoggedIn = false;
-    sessionStorage.removeItem('user');
-    this.router.navigate(['login']);
-  }
-
-  isUserLoggedIn(): boolean {
-    if (this.isLoggedIn || sessionStorage.getItem('user')) {
-      return true;
-    } else {
-      this.router.navigate(['login']);
-      return false;
-    }
+  public get user$(): Observable<IUser | null> {
+    return this._user$;
   }
 }

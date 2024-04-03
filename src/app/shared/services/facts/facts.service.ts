@@ -1,5 +1,5 @@
-import { Injectable, InjectionToken } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 
 import {
   BehaviorSubject,
@@ -12,39 +12,35 @@ import {
 } from 'rxjs';
 
 import { IFact } from '../../interfaces/facts.interface';
-import { HttpFactsService } from './facts.http.service';
-import { LoaderService } from '../loader.service';
 import { ErrorDialogService } from '../error-dialog.service';
-
-export const FACTS_SERVICE = new InjectionToken<string>('FACTS_SERVICE_TOKEN');
+import { LoaderService } from '../loader.service';
+import { HttpFactsService } from './facts.http.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FactsService {
-  private _facts$ = new BehaviorSubject<IFact[]>([]);
+  private readonly loaderService: LoaderService = inject(LoaderService);
+  private readonly httpService: HttpFactsService = inject(HttpFactsService);
+  private readonly dialogService: ErrorDialogService =
+    inject(ErrorDialogService);
 
-  get facts$(): Observable<IFact[]> {
-    return this._facts$.asObservable();
-  }
+  private readonly _facts: BehaviorSubject<IFact[]> = new BehaviorSubject<
+    IFact[]
+  >([]);
+  private readonly _facts$: Observable<IFact[]> = this._facts.asObservable();
 
-  constructor(
-    private httpService: HttpFactsService,
-    private loaderService: LoaderService,
-    private dialogService: ErrorDialogService
-  ) {}
-
-  getFacts(count: number): void {
+  public getFacts(count: number): void {
     this.httpService
       .getFacts(count)
       .pipe(
         tap((facts) => {
           this.loaderService.showLoader();
-          const removedDuplicates = [...this._facts$.value, ...facts].filter(
+          const removedDuplicates = [...this._facts.value, ...facts].filter(
             (fact, index, self) =>
               index === self.findIndex((f) => f.sentence === fact.sentence)
           );
-          this._facts$.next(removedDuplicates);
+          this._facts.next(removedDuplicates);
         }),
         delay(2000),
         catchError((error: HttpErrorResponse) => {
@@ -61,5 +57,9 @@ export class FactsService {
         })
       )
       .subscribe();
+  }
+
+  public get facts$(): Observable<IFact[]> {
+    return this._facts$;
   }
 }

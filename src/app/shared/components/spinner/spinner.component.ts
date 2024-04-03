@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LoaderService } from '../../services/loader.service';
 import { tap } from 'rxjs';
 
@@ -8,11 +8,11 @@ import { tap } from 'rxjs';
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent {
-  showLoader: boolean = false;
+  protected showLoader: boolean = false;
 
-  constructor(private loaderService: LoaderService) {}
+  private readonly loaderService: LoaderService = inject(LoaderService);
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loaderService.loaderVisibility$
       .pipe(
         tap((value) => {

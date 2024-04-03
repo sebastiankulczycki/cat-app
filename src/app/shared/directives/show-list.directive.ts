@@ -12,56 +12,64 @@ import {
   selector: '[showList]',
 })
 export class ShowListDirective implements AfterViewInit {
-  @Input('showList')
-  listId!: string;
+  @Input('showList') public listId!: string;
 
-  rootElRect: any;
-  listElement!: HTMLElement;
+  private _rootElRect!: DOMRect;
+  private _listElement!: HTMLElement;
 
-  windowWidth =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth;
-  windowHeight =
-    window.innerHeight ||
-    document.documentElement.clientHeight ||
-    document.body.clientHeight;
+  private readonly _renderer!: Renderer2;
 
-  private renderer: Renderer2;
-
-  constructor(private el: ElementRef, rendererFactory: RendererFactory2) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+  constructor(
+    private readonly el: ElementRef,
+    private readonly rendererFactory: RendererFactory2
+  ) {
+    this._renderer = rendererFactory.createRenderer(null, null);
   }
 
-  ngAfterViewInit(): void {
-    this.listElement = <HTMLElement>document.getElementById(this.listId);
-    this.renderer.setStyle(this.listElement, 'position', 'absolute');
-    this.renderer.setStyle(this.listElement, 'top', '0');
-    this.renderer.setStyle(this.listElement, 'left', '0');
-    this.renderer.setStyle(this.listElement, 'opacity', '0');
-    this.renderer.setStyle(this.listElement, 'z-index', '999');
-    this.renderer.listen(this.listElement, 'mouseleave', () => {
-      this.renderer.setStyle(this.listElement, 'opacity', '0');
+  public ngAfterViewInit(): void {
+    this._setListStyles();
+    this._addListOnClickListener();
+  }
+
+  private _setListStyles(): void {
+    this._listElement = <HTMLElement>document.getElementById(this.listId);
+    this._renderer.setStyle(this._listElement, 'position', 'absolute');
+    this._renderer.setStyle(this._listElement, 'top', '0');
+    this._renderer.setStyle(this._listElement, 'left', '0');
+    this._renderer.setStyle(this._listElement, 'opacity', '0');
+    this._renderer.setStyle(this._listElement, 'z-index', '999');
+  }
+
+  private _addListOnClickListener(): void {
+    this._renderer.listen(this._listElement, 'mouseleave', () => {
+      this._renderer.setStyle(this._listElement, 'opacity', '0');
     });
   }
 
   @HostListener('click', ['$event'])
-  onClick(event: MouseEvent) {
+  private _onClick(event: MouseEvent): void {
     event.preventDefault();
-    this.rootElRect = this.el.nativeElement.getBoundingClientRect();
-    const listRect = this.listElement.getBoundingClientRect();
-    this.renderer.setStyle(
-      this.listElement,
-      'top',
-      `${this.rootElRect.top + this.rootElRect.height + 5}px`
-    );
-    this.renderer.setStyle(
-      this.listElement,
-      'left',
-      `${this.rootElRect.right - listRect.width - this.rootElRect.width}px`
-    );
+    this._setListPosition();
+    this._setListVisibility();
+  }
 
-    const displayValue = this.listElement.style.opacity === '1' ? '0' : '1';
-    this.renderer.setStyle(this.listElement, 'opacity', displayValue);
+  private _setListPosition(): void {
+    this._rootElRect = this.el.nativeElement.getBoundingClientRect();
+    const listRect = this._listElement.getBoundingClientRect();
+    this._renderer.setStyle(
+      this._listElement,
+      'top',
+      `${this._rootElRect.top + this._rootElRect.height + 5}px`
+    );
+    this._renderer.setStyle(
+      this._listElement,
+      'left',
+      `${this._rootElRect.right - listRect.width - this._rootElRect.width}px`
+    );
+  }
+
+  private _setListVisibility(): void {
+    const displayValue = this._listElement.style.opacity === '1' ? '0' : '1';
+    this._renderer.setStyle(this._listElement, 'opacity', displayValue);
   }
 }

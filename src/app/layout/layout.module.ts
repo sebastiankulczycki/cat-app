@@ -6,10 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 
-import {
-  AUTH_SERVICE,
-  AuthService,
-} from '../shared/services/auth/auth.service';
+import { AuthService } from '../shared/services/auth/auth.service';
 import { ShowListDirective } from '../shared/directives/show-list.directive';
 
 import { HeaderComponent } from './components/header/header.component';
@@ -36,6 +33,6 @@ import { SpinnerModule } from '../shared/components/spinner/spinner.module';
     FactsModule,
     SpinnerModule,
   ],
-  providers: [{ provide: AUTH_SERVICE, useValue: AuthService }],
+  providers: [AuthService],
 })
 export class LayoutModule {}

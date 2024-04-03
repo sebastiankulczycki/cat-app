@@ -3,7 +3,7 @@ import {
   HttpParams,
   HttpParamsOptions,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Observable, map } from 'rxjs';
 
@@ -16,9 +16,9 @@ export const API_URL = 'https://meowfacts.herokuapp.com/';
   providedIn: 'root',
 })
 export class HttpFactsService {
-  constructor(private http: HttpClient) {}
+  private readonly http: HttpClient = inject(HttpClient);
 
-  getFacts(count: number): Observable<IFact[]> {
+  public getFacts(count: number): Observable<IFact[]> {
     const paramsOptions: HttpParamsOptions = {
       fromObject: {
         count,
@@ -38,7 +38,7 @@ export class HttpFactsService {
     );
   }
 
-  getFact(): Observable<IFact> {
+  public getFact(): Observable<IFact> {
     return this.http.get<ApiResponse<string[]>>(API_URL).pipe(
       map((response) => {
         return response.data.map((fact) => {

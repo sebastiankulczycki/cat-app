@@ -1,27 +1,23 @@
 import { Injectable, InjectionToken } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
-export const LOADER_SERVICE = new InjectionToken<string>(
-  'LOADER_SERVICE_TOKEN'
-);
-
 @Injectable({
   providedIn: 'root',
 })
 export class LoaderService {
-  private _loaderVisibility$ = new Subject<boolean>();
+  private readonly _loaderVisibility: Subject<boolean> = new Subject<boolean>();
+  private readonly _loaderVisibility$: Observable<boolean> =
+    this._loaderVisibility.asObservable();
 
-  get loaderVisibility$(): Observable<boolean> {
-    return this._loaderVisibility$.asObservable();
+  public showLoader(): void {
+    this._loaderVisibility.next(true);
   }
 
-  constructor() {}
-
-  showLoader(): void {
-    this._loaderVisibility$.next(true);
+  public hideLoader(): void {
+    this._loaderVisibility.next(false);
   }
 
-  hideLoader(): void {
-    this._loaderVisibility$.next(false);
+  public get loaderVisibility$(): Observable<boolean> {
+    return this._loaderVisibility$;
   }
 }

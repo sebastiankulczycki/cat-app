@@ -1,10 +1,14 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-	selector: 'app-error-dialog',
-	templateUrl: './error-dialog.component.html',
+  selector: 'app-error-dialog',
+  templateUrl: './error-dialog.component.html',
 })
 export class ErrorDialogComponent {
-	constructor(@Inject(MAT_DIALOG_DATA) public errorMessage: string) {}
+  private readonly _errorMessage: string = inject(MAT_DIALOG_DATA);
+
+  protected get errorMessage(): string {
+    return this._errorMessage;
+  }
 }
